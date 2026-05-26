@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import {getCharacters} from './services/characterService';
 import './App.css'; 
 import type { Character, ApiResponse } from './interface';
 import { Header } from './components/Header';
@@ -10,36 +11,19 @@ function App() {
   const [characters, setCharacters] = useState<Character[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // URL de la API de Rick and Morty. 
-  const API_URL = "https://rickandmortyapi.com/api/character";
-
-  const getCharacters = async (name: string = "") => {
-    setLoading(true);
-    try {
-      const url = name.trim() 
-        ? `${API_URL}/?name=${name.trim()}` 
-        : API_URL;
-
-      const response = await fetch(url);
-      
-      // La API devuelve 404 si no encuentra resultados. 
-      if (!response.ok) {
-        setCharacters([]);
-        return;
-      }
-
-      const data: ApiResponse = await response.json();
-      setCharacters(data.results || []);
-    } catch (error) {
-      console.error("Error cargando personajes:", error);
-      setCharacters([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    getCharacters();
+    const fetchCharacters = async () => {
+      try {
+        const data = await getCharacters();
+        setCharacters(data);
+      } catch (error) {
+        console.error("Error al obtener los personajes:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCharacters();
   }, []);
 
   return (
