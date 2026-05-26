@@ -1,9 +1,4 @@
-import React from 'react';
-
-// Interfaz para las props del Header
-interface HeaderProps {}
-
-export const Header: React.FC<HeaderProps> = () => {
+export const Header = () => {
   return (
     <header className="header">
       <h1>
