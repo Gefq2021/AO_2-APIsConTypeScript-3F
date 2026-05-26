@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import {getCharacters} from './services/characterService';
 import './App.css'; 
-import type { Character, ApiResponse } from './interface';
+import type { Character } from './interface';
 import { Header } from './components/Header';
 import { SearchBar } from './components/SearchBar';
 import { CharacterGrid } from './components/CharacterGrid';
@@ -32,8 +32,19 @@ function App() {
       <Header />
       
       <div className="search-section">
-        <SearchBar onSearch={(val) => getCharacters(val)} />
-      </div>
+    <SearchBar onSearch={async (val) => {
+      setLoading(true);
+      try {
+        const data = await getCharacters(val); // Pasamos el nombre buscado
+        setCharacters(data);
+      } catch (error) {
+        console.error("No se encontraron personajes");
+        setCharacters([]); // Limpiamos si no hay resultados
+      } finally {
+        setLoading(false);
+      }
+    }} />
+  </div>
 
       {loading ? (
         <p style={{ textAlign: 'center', color: 'var(--portal-green)' }}>
